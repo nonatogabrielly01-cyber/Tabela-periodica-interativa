@@ -1,5 +1,4 @@
-# Balanceamento de Equações 
-
+# Tabela Periódica 
 ## OBJETIVOS 
 crie um site 
 
