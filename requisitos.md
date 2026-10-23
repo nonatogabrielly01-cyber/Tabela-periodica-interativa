@@ -1,4 +1,4 @@
-# Tabela Periódica Interativa  
+﻿# Tabela Periódica Interativa  
 
 ## OBJETIVOS 
 crie um site com uma tabela periódica onde usuario entra no site e estuda sobre a tabela periódica interativa,na tabela so tera o  nome e as siglas dos elementos NADA MAIS, onde ao clicar em algum elemento da tabela aparece 4 cards.No primeiro card são informações gerais do elemento, o 2 card é a estrutura do elemento, 3 card é sobre as aplicações do cotidiano e o ultimo card é sobre o elemento(história, descoberta,quem identificou e quando) e no final irá aparecer uma tela onde o usuario poderá abaixar os cards. Ele será inspirado no site zperiod

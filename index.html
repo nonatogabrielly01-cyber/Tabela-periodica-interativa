@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tabela Periódica Interativa - Estudo Completo dos Elementos</title>
+  <meta name="description" content="Tabela periódica interativa com animação de brilho, 4 cards informativos por elemento e opção de download para a galeria.">
+
+  <!-- Tailwind CSS via CDN Oficial -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            cosmic: {
+              950: '#020716',
+              900: '#06112c',
+              800: '#0d2253',
+              700: '#14347c',
+              card: '#0f224f',
+              cyan: '#38bdf8',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Estilos Customizados -->
+  <link rel="stylesheet" href="assets/css/style.css">
+
+  <!-- Biblioteca html2canvas para download de cards em alta resolução -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body class="cosmic-dark-bg min-h-screen text-slate-100 flex flex-col justify-between selection:bg-cyan-500 selection:text-slate-950">
+
+  <!-- Fundo com Estrelas Dinâmicas Cintilantes -->
+  <canvas id="stars-canvas"></canvas>
+
+  <!-- ==============================================================
+       CABEÇALHO PRINCIPAL (HEADER RESPONSIVO)
+       ============================================================== -->
+  <header class="relative z-20 border-b border-cyan-500/20 bg-slate-950/70 dark:bg-slate-950/80 backdrop-blur-md sticky top-0 px-4 py-3">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
+      
+      <!-- Logotipo & Título -->
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-400 to-blue-700 flex items-center justify-center shadow-lg shadow-cyan-500/30">
+          <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path>
+          </svg>
+        </div>
+        <div>
+          <h1 class="text-lg md:text-xl font-extrabold tracking-tight text-white flex items-center gap-2">
+            Tabela Periódica <span class="text-cyan-400">Interativa</span>
+          </h1>
+          <p class="text-[10px] md:text-xs text-cyan-200/70">Inspirada no zperiod • Estudo Visual & Cards</p>
+        </div>
+      </div>
+
+      <!-- Barra de Pesquisa Rápida -->
+      <div class="flex-1 max-w-xs hidden md:block">
+        <div class="relative">
+          <input type="text" id="search-element" placeholder="Buscar elemento (ex: Fe, Ferro, 26)..." 
+                 class="w-full text-xs py-2 pl-9 pr-3 rounded-full bg-slate-900/80 border border-cyan-500/30 text-white placeholder-slate-400 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-all">
+          <svg class="w-4 h-4 text-cyan-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Controles de Cabeçalho: Modo Claro/Escuro & Login -->
+      <div class="flex items-center space-x-2">
+        <!-- Botão Modo Noturno / Claro -->
+        <button id="theme-toggle-btn" type="button" class="flex items-center space-x-1.5 px-3 py-2 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700 text-xs font-semibold transition-all">
+          <!-- Conteúdo gerado via JS -->
+        </button>
+
+        <!-- Botão de Login (Gmail / Telefone) -->
+        <button id="auth-btn" type="button" class="flex items-center space-x-2 px-3.5 py-2 rounded-xl bg-gradient-to-r from-blue-700 to-cyan-600 hover:from-blue-600 hover:to-cyan-500 border border-cyan-400/50 shadow-md shadow-cyan-500/20 text-xs font-bold transition-all active:scale-95">
+          <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+          <span class="text-white">Entrar / Login</span>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ==============================================================
+       CONTEÚDO PRINCIPAL (TABELA PERIÓDICA INTERATIVA)
+       ============================================================== -->
+  <main class="relative z-10 flex-1 max-w-7xl mx-auto w-full px-2 sm:px-4 py-4 sm:py-6">
+
+    <!-- Banner Instrucional & Indicadores -->
+    <div class="mb-4 text-center">
+      <div class="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full bg-cyan-950/60 border border-cyan-500/30 text-cyan-300 text-xs font-medium backdrop-blur-sm mb-2 shadow-inner">
+        <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+        <span>Clique em qualquer elemento para vê-lo <strong>brilhar</strong> e abrir os <strong>4 Cards</strong> informativos</span>
+      </div>
+      <p class="text-[11px] text-slate-400 max-w-xl mx-auto">
+        Tabela com <strong>apenas sigla e nome</strong> conforme os requisitos. Ao clicar, estude Informações Gerais, Estrutura Atômica, Aplicações do Cotidiano e História.
+      </p>
+    </div>
+
+    <!-- Legenda de Categorias Químicas -->
+    <div class="flex flex-wrap items-center justify-center gap-1.5 mb-5 text-[10px] font-semibold">
+      <span class="px-2.5 py-1 rounded-md bg-sky-500/20 text-sky-300 border border-sky-500/40">Não Metais</span>
+      <span class="px-2.5 py-1 rounded-md bg-purple-500/20 text-purple-300 border border-purple-500/40">Gases Nobres</span>
+      <span class="px-2.5 py-1 rounded-md bg-red-500/20 text-red-300 border border-red-500/40">Metais Alcalinos</span>
+      <span class="px-2.5 py-1 rounded-md bg-orange-500/20 text-orange-300 border border-orange-500/40">Alcalino-Terrosos</span>
+      <span class="px-2.5 py-1 rounded-md bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">Semimetais</span>
+      <span class="px-2.5 py-1 rounded-md bg-cyan-500/20 text-cyan-300 border border-cyan-500/40">Halogênios</span>
+      <span class="px-2.5 py-1 rounded-md bg-yellow-500/20 text-yellow-300 border border-yellow-500/40">Metais de Transição</span>
+      <span class="px-2.5 py-1 rounded-md bg-indigo-500/20 text-indigo-300 border border-indigo-500/40">Pós-Transição</span>
+      <span class="px-2.5 py-1 rounded-md bg-pink-500/20 text-pink-300 border border-pink-500/40">Lantanídeos</span>
+      <span class="px-2.5 py-1 rounded-md bg-rose-500/20 text-rose-300 border border-rose-500/40">Actinídeos</span>
+    </div>
+
+    <!-- GRID DA TABELA PERIÓDICA (18 COLUNAS X 7 LINHAS) -->
+    <div class="overflow-x-auto pb-4 pt-1 rounded-2xl bg-slate-950/40 border border-cyan-900/30 p-2 sm:p-4 backdrop-blur-sm shadow-2xl">
+      <div id="periodic-table-grid" 
+           class="grid grid-cols-18 gap-1 sm:gap-1.5 min-w-[920px]" 
+           style="grid-template-columns: repeat(18, minmax(46px, 1fr));">
+        <!-- Células geradas via JS contendo ESTRITAMENTE: Sigla e Nome -->
+      </div>
+
+      <!-- Bloco f: Lantanídeos e Actinídeos -->
+      <div class="mt-4 pt-4 border-t border-cyan-900/40 min-w-[920px] flex flex-col items-center">
+        <div class="w-full flex items-center justify-between px-2 mb-2">
+          <span class="text-[11px] font-bold text-cyan-300 tracking-wider uppercase">Série dos Lantanídeos e Actinídeos (Elementos 57-71 e 89-103)</span>
+        </div>
+        <div id="lanthanides-actinides-grid" 
+             class="grid gap-1 sm:gap-1.5 w-full" 
+             style="grid-template-columns: repeat(15, minmax(46px, 1fr)); max-width: 820px;">
+          <!-- Lantanídeos e Actinídeos gerados via JS -->
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ==============================================================
+       MODAL DOS 4 CARDS + TELA FINAL DE DOWNLOAD
+       REGRA: "ao clicar em algum elemento da tabela aparece 4 cards...
+       e no final irá aparecer uma tela onde o usuario poderá abaixar os cards"
+       ============================================================== -->
+  <div id="cards-modal" class="fixed inset-0 z-50 hidden bg-slate-950/85 backdrop-blur-md items-center justify-center p-3 sm:p-6 overflow-y-auto">
+    <div class="relative w-full max-w-xl my-auto animate-fadeIn">
+      
+      <!-- Barra Superior de Controle do Modal -->
+      <div class="flex items-center justify-between mb-3 px-2">
+        <button id="close-cards-modal" type="button" class="flex items-center space-x-1.5 text-xs font-bold px-3 py-2 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-cyan-300 hover:text-white transition-all border border-cyan-500/30">
+          <span>← Voltar à Tabela Inicial</span>
+        </button>
+
+        <div id="modal-element-title" class="text-sm font-extrabold text-white flex items-center">
+          <!-- Título atualizado via JS -->
+        </div>
+
+        <button onclick="window.closeCardsModal()" class="w-8 h-8 rounded-full bg-slate-800/80 hover:bg-red-900/50 text-slate-400 hover:text-red-400 flex items-center justify-center transition-all text-sm font-bold">
+          ✕
+        </button>
+      </div>
+
+      <!-- Container do Card Ativo -->
+      <div id="cards-container" class="w-full transition-all duration-300">
+        <!-- Card 1, 2, 3, 4 ou 5 injetado aqui dinamicamente -->
+      </div>
+
+      <!-- Pontos de Paginação Inferiores (Fiel aos Mockups) -->
+      <div class="flex items-center justify-center space-x-2 mt-4" id="card-pagination-dots">
+        <!-- Dots gerados via JS -->
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ==============================================================
+       MODAL DE AUTENTICAÇÃO (GMAIL E TELEFONE)
+       REGRA: "logar o site com gmail ou número de telefone"
+       ============================================================== -->
+  <div id="auth-modal" class="fixed inset-0 z-50 hidden bg-slate-950/80 backdrop-blur-md items-center justify-center p-4">
+    <div class="bg-slate-900 border-2 border-cyan-500/40 rounded-2xl max-w-sm w-full p-6 shadow-2xl relative text-white">
+      
+      <button id="close-auth-modal" class="absolute top-4 right-4 text-slate-400 hover:text-white text-sm font-bold">✕</button>
+
+      <div class="text-center mb-5">
+        <div class="w-12 h-12 mx-auto rounded-xl bg-gradient-to-tr from-blue-600 to-cyan-400 flex items-center justify-center mb-2 shadow-lg shadow-cyan-500/30">
+          <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path></svg>
+        </div>
+        <h3 class="text-lg font-bold">Identifique-se na Plataforma</h3>
+        <p class="text-xs text-slate-400">Acesse para salvar seu progresso e histórico de downloads</p>
+      </div>
+
+      <!-- Abas de Escolha: Gmail ou Telefone -->
+      <div class="flex border-b border-slate-700 mb-5">
+        <button id="tab-gmail" type="button" class="flex-1 py-2 text-xs font-bold border-b-2 border-cyan-400 text-cyan-400">
+          Entrar com Gmail
+        </button>
+        <button id="tab-phone" type="button" class="flex-1 py-2 text-xs font-medium text-slate-400 hover:text-slate-200 border-b-2 border-transparent">
+          Entrar com Telefone
+        </button>
+      </div>
+
+      <!-- Formulário Gmail -->
+      <form id="form-gmail" class="space-y-3.5">
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Seu Nome Completo</label>
+          <input type="text" id="gmail-name-input" placeholder="Ex: Maria Silva" required
+                 class="w-full text-xs p-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white focus:outline-none focus:border-cyan-400">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">E-mail do Gmail</label>
+          <input type="email" id="gmail-input" placeholder="usuario@gmail.com" required
+                 class="w-full text-xs p-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white focus:outline-none focus:border-cyan-400">
+        </div>
+        <button type="submit" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-red-600 to-rose-500 hover:from-red-500 hover:to-rose-400 font-bold text-xs text-white shadow-md transition-all flex items-center justify-center space-x-2">
+          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12.24 10.285V13.4h6.887C18.2 15.614 15.645 18 12.24 18c-3.315 0-6-2.685-6-6s2.685-6 6-6c1.47 0 2.812.53 3.856 1.408l2.367-2.367C16.945 3.52 14.73 2.6 12.24 2.6 7.025 2.6 2.8 6.825 2.8 12.04c0 5.215 4.225 9.44 9.44 9.44 5.46 0 9.09-3.84 9.09-9.25 0-.62-.065-1.22-.185-1.945H12.24z"/></svg>
+          <span>Conectar com Conta Google</span>
+        </button>
+      </form>
+
+      <!-- Formulário Telefone -->
+      <form id="form-phone" class="space-y-3.5 hidden">
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Seu Nome</label>
+          <input type="text" id="phone-name-input" placeholder="Ex: Gabriel Santos" required
+                 class="w-full text-xs p-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white focus:outline-none focus:border-cyan-400">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Número de Telefone (com DDD)</label>
+          <input type="tel" id="phone-input" placeholder="(11) 98765-4321" required
+                 class="w-full text-xs p-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white focus:outline-none focus:border-cyan-400">
+        </div>
+        <button type="submit" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 font-bold text-xs text-white shadow-md transition-all flex items-center justify-center space-x-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+          <span>Entrar com Número de Telefone</span>
+        </button>
+      </form>
+
+    </div>
+  </div>
+
+  <!-- ==============================================================
+       RODAPÉ (FOOTER)
+       ============================================================== -->
+  <footer class="relative z-10 border-t border-cyan-900/30 bg-slate-950/80 backdrop-blur-md py-4 px-4 text-center text-xs text-slate-400">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
+      <div class="flex items-center space-x-2">
+        <span class="w-2 h-2 rounded-full bg-cyan-400"></span>
+        <span>Tabela Periódica Interativa Ativa</span>
+      </div>
+      <div>
+        Desenvolvido de acordo com <code class="text-cyan-400">requisitos.md</code> • Inspirado no zperiod
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts da Aplicação -->
+  <script src="assets/js/elements-data.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>

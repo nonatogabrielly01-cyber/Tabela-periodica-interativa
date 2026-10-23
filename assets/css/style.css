@@ -1,0 +1,273 @@
+/* ==============================================================
+   Tabela Periódica Interativa - Estilos Customizados & Animações
+   ============================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap');
+
+:root {
+  --cosmic-bg-dark: #050d21;
+  --cosmic-blue-deep: #0a1738;
+  --cosmic-blue-card: #0f224f;
+  --accent-cyan: #38bdf8;
+  --accent-blue: #2563eb;
+  --glow-color: rgba(56, 189, 248, 0.6);
+  --star-color: rgba(255, 255, 255, 0.85);
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  overflow-x: hidden;
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+h1, h2, h3, .font-heading {
+  font-family: 'Space Grotesk', 'Plus Jakarta Sans', sans-serif;
+}
+
+/* ==========================================
+   Fundo Cósmico Azul com Estrelas Animadas
+   ========================================== */
+.cosmic-dark-bg {
+  background: radial-gradient(circle at 50% 20%, #0d2253 0%, #06112c 50%, #020716 100%);
+  background-attachment: fixed;
+  color: #f1f5f9;
+}
+
+.cosmic-light-bg {
+  background: radial-gradient(circle at 50% 20%, #e0f2fe 0%, #bae6fd 60%, #93c5fd 100%);
+  background-attachment: fixed;
+  color: #0f172a;
+}
+
+/* Camada de estrelas em canvas / CSS */
+#stars-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ==========================================
+   Células da Tabela Periódica
+   REGRA: "na tabela so tera o nome e as siglas dos elementos NADA MAIS"
+   ========================================== */
+.element-cell {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 0.35rem 0.2rem;
+  min-height: 58px;
+  backdrop-filter: blur(8px);
+}
+
+/* Tema Dark da célula */
+.dark .element-cell {
+  background: rgba(15, 34, 79, 0.65);
+  border: 1.5px solid rgba(56, 189, 248, 0.25);
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+.dark .element-cell:hover {
+  transform: translateY(-3px) scale(1.05);
+  border-color: rgba(56, 189, 248, 0.8);
+  box-shadow: 0 0 16px rgba(56, 189, 248, 0.5), inset 0 0 12px rgba(56, 189, 248, 0.2);
+  z-index: 10;
+}
+
+/* Tema Claro da célula */
+.element-cell {
+  background: rgba(255, 255, 255, 0.85);
+  border: 1.5px solid rgba(2, 132, 199, 0.35);
+  color: #0f172a;
+  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.12);
+}
+
+.element-cell:hover {
+  transform: translateY(-3px) scale(1.05);
+  border-color: rgba(2, 132, 199, 0.9);
+  box-shadow: 0 0 16px rgba(2, 132, 199, 0.4), inset 0 0 8px rgba(2, 132, 199, 0.15);
+  z-index: 10;
+}
+
+/* Tipografia Estrita da Tabela: Apenas Sigla e Nome */
+.element-symbol {
+  font-weight: 800;
+  font-size: 1.25rem;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.element-name {
+  font-size: 0.65rem;
+  font-weight: 500;
+  text-transform: lowercase;
+  opacity: 0.85;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 96%;
+  margin-top: 2px;
+}
+
+/* ==========================================
+   Efeito de Brilho Dinâmico ao Clicar
+   REGRA: "Ao clicar no elemento da tabela periodica o elemento brilha e vai diretamente para os cards"
+   ========================================== */
+.element-glowing {
+  animation: cosmicGlowPulse 0.75s ease-out forwards !important;
+  z-index: 9999 !important;
+}
+
+@keyframes cosmicGlowPulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 rgba(56, 189, 248, 0);
+  }
+  40% {
+    transform: scale(1.25);
+    background: #38bdf8 !important;
+    border-color: #ffffff !important;
+    color: #030712 !important;
+    box-shadow: 0 0 35px #38bdf8, 0 0 65px #0284c7, 0 0 90px #ffffff;
+  }
+  100% {
+    transform: scale(1.15);
+    box-shadow: 0 0 25px #38bdf8, 0 0 50px rgba(56, 189, 248, 0.6);
+  }
+}
+
+/* Cores sutis por categoria de elemento (Bordas e Badges) */
+.cat-nao-metal { border-left: 3px solid #38bdf8 !important; }
+.cat-gas-nobre { border-left: 3px solid #c084fc !important; }
+.cat-metal-alcalino { border-left: 3px solid #f87171 !important; }
+.cat-metal-alcalino-terroso { border-left: 3px solid #fb923c !important; }
+.cat-semimetal { border-left: 3px solid #34d399 !important; }
+.cat-halogenio { border-left: 3px solid #22d3ee !important; }
+.cat-metal-transicao { border-left: 3px solid #facc15 !important; }
+.cat-metal-pos-transicao { border-left: 3px solid #818cf8 !important; }
+.cat-lantanideo { border-left: 3px solid #ec4899 !important; }
+.cat-actinideo { border-left: 3px solid #f43f5e !important; }
+
+/* ==========================================
+   Estilização dos 4 Cards (Fiel aos Mockups)
+   ========================================== */
+.card-sheet {
+  background: #f1f5f9;
+  color: #0f172a;
+  border-radius: 1.75rem;
+  border: 3px solid #0f1d38;
+  box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.5);
+  position: relative;
+  overflow: hidden;
+  max-width: 520px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.dark .card-sheet {
+  background: #0d1a38;
+  color: #f8fafc;
+  border: 2px solid #38bdf8;
+  box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.8), 0 0 25px rgba(56, 189, 248, 0.25);
+}
+
+/* Badge de cabeçalho idêntica às fotos do WhatsApp */
+.card-header-badge {
+  background-color: #122144;
+  color: #ffffff;
+  padding: 0.6rem 1.75rem;
+  border-radius: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-align: center;
+  font-size: 1.05rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  margin-bottom: 1.25rem;
+  display: inline-block;
+  width: 100%;
+}
+
+.dark .card-header-badge {
+  background-color: #1a3266;
+  border: 1px solid rgba(56, 189, 248, 0.4);
+}
+
+/* Seta estilizada com curva como no mockup */
+.curved-arrow {
+  display: inline-block;
+  color: #38bdf8;
+  font-size: 1.25rem;
+  margin-right: 0.5rem;
+}
+
+/* Card 1 - Grid Técnico Estilizado */
+.technical-box {
+  background: rgba(255, 255, 255, 0.95);
+  border: 2px solid #0f1d38;
+  border-radius: 0.75rem;
+  position: relative;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+}
+
+.dark .technical-box {
+  background: rgba(10, 23, 56, 0.9);
+  border-color: rgba(56, 189, 248, 0.5);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+}
+
+/* Pontos de Paginação dos Cards (como no mockup) */
+.pagination-dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: #94a3b8;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.pagination-dot.active {
+  background: #38bdf8;
+  width: 26px;
+  border-radius: 9999px;
+  box-shadow: 0 0 10px #38bdf8;
+}
+
+/* Órbitas atômicas animadas do Card 2 */
+.orbit-path {
+  position: absolute;
+  border: 1.5px solid rgba(56, 189, 248, 0.45);
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+/* Scrollbar personalizada */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(10, 23, 56, 0.6);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #0284c7;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #38bdf8;
+}
